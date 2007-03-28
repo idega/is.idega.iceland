@@ -1,5 +1,8 @@
 package is.postur;
 
+import com.idega.core.location.data.PostalCode;
+import com.idega.core.location.data.Street;
+
 public class Gata {
 
 	private int id;
@@ -7,6 +10,20 @@ public class Gata {
 	private String heitiThagufall;
 	private String postnumerString;
 	private Postnumer postnumer;
+	
+	public Gata() {
+		// empty
+	}
+	
+	public Gata(Street street) {
+		setNafn(street.getName());
+		setNafnThagufall(street.getNameDativ());
+		PostalCode postalCode = street.getPostalCode();
+		if (postalCode != null) {
+			setPostnumerString(postalCode.getPostalCode());
+		}
+	}
+	
 	
 	public String getNafn() {
 		return heiti;
