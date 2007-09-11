@@ -88,6 +88,10 @@ public class Postnumeraskra {
 
 	private String getNodeChildValueAsString(Node PostnumerNode) {
 		Node firstChild = PostnumerNode.getFirstChild();
+		if (firstChild == null) {
+			// for this zip code there is no post office
+			return null;
+		}
 		String str = firstChild.getNodeValue();
 		return str;
 	}
