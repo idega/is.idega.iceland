@@ -50,8 +50,8 @@ public class Gotuskra {
 	
 	public Gotuskra(Document document) {
 		this.gotuskra=document;
-	}
 
+	}
 	
 	protected void parseData(){
 		NodeList gotulisti = gotuskra.getElementsByTagName("Gata");
@@ -146,6 +146,11 @@ public class Gotuskra {
 	
 	public Gata getGataByNafnAndPostnumer(String nafn, String postnumer){
 
+		if (nafn == null) { 
+			return null;
+		}
+
+		nafn = nafn.trim();
 		List allargotur = getGoturByPostnumer(postnumer);
 		for (Iterator iter = allargotur.iterator(); iter.hasNext();) {
 			Gata gata = (Gata) iter.next();
@@ -153,6 +158,6 @@ public class Gotuskra {
 				return gata;
 			}
 		}
-		throw new RuntimeException("No gata found with name:"+nafn);
+		return null;
 	}
 }
