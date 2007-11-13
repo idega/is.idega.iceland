@@ -2,8 +2,10 @@ package is.postur;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,10 +17,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.idega.util.datastructures.HashMatrix;
+
 public class Gotuskra {
 
 	Document gotuskra;
-	List gotur;
+	HashMatrix gotur;
 	
 	public static Gotuskra cached;
 	
@@ -83,7 +87,7 @@ public class Gotuskra {
 					gata.setNafnThagufall(Heiti_thgf);
 				}
 			}
-			getGotur().add(gata);
+			getGotur().put(gata.getPostnumerString(), gata.getNafn(), gata);
 		}
 	}
 
@@ -108,40 +112,47 @@ public class Gotuskra {
 	}
 	
 	
-	public static void main(String args[]) throws Exception{
-		
-		Gotuskra skra = new Gotuskra();
-		skra.parseData();
-		
-		List gotur = skra.getGotur();
-		for (Iterator iter = gotur.iterator(); iter.hasNext();) {
-			Gata gata = (Gata) iter.next();
-			System.out.println("Gata: "+gata.getNafn());
-			
-		}
-	}
+//	public static void main(String args[]) throws Exception{
+//		
+//		Gotuskra skra = new Gotuskra();
+//		skra.parseData();
+//		
+//		List gotur = skra.getGotur();
+//		for (Iterator iter = gotur.iterator(); iter.hasNext();) {
+//			Gata gata = (Gata) iter.next();
+//			System.out.println("Gata: "+gata.getNafn());
+//			
+//		}
+//	}
 
-	public List getGotur() {
+	public HashMatrix getGotur() {
 		if(gotur==null){
-			gotur=new ArrayList();
+			// use insertion order 
+			gotur=new HashMatrix() {
+				  protected Map getYDimension(Object xKey)  {
+					    if (this.xDimension == null) {
+					      this.xDimension = new LinkedHashMap();
+					    }
+					    Map yDimension = (Map) this.xDimension.get(xKey);
+					    if (yDimension == null) {
+					      yDimension = new LinkedHashMap();
+					      this.xDimension.put(xKey, yDimension);
+					    }
+					    return yDimension;
+					  }
+			};
 		}
 		return gotur;
 	}
 
-	public void setGotur(List gotur) {
-		this.gotur = gotur;
-	}
+//	public void setGotur(List gotur) {
+//		this.gotur = gotur;
+//	}
 	
 	public List getGoturByPostnumer(String postnumer){
-		List gotur = new ArrayList();
-		List allargotur = getGotur();
-		for (Iterator iter = allargotur.iterator(); iter.hasNext();) {
-			Gata gata = (Gata) iter.next();
-			if(gata.getPostnumerString().equals(postnumer)){
-				gotur.add(gata);
-			}
-		}
-		return gotur;
+		Map gotur = getGotur().get(postnumer);
+		Collection streets = gotur.values();
+		return new ArrayList(streets);
 	}
 	
 	public Gata getGataByNafnAndPostnumer(String nafn, String postnumer){
@@ -149,15 +160,17 @@ public class Gotuskra {
 		if (nafn == null) { 
 			return null;
 		}
-
 		nafn = nafn.trim();
-		List allargotur = getGoturByPostnumer(postnumer);
-		for (Iterator iter = allargotur.iterator(); iter.hasNext();) {
-			Gata gata = (Gata) iter.next();
-			if(gata.getNafn().equals(nafn)){
-				return gata;
-			}
-		}
-		return null;
+		return (Gata) getGotur().get(postnumer, nafn);
 	}
+		
+//		List allargotur = getGoturByPostnumer(postnumer);
+//		for (Iterator iter = allargotur.iterator(); iter.hasNext();) {
+//			Gata gata = (Gata) iter.next();
+//			if(gata.getNafn().equals(nafn)){
+//				return gata;
+//			}
+//		}
+//		return null;
+//	}
 }

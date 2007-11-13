@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,34 +58,50 @@ public class Postnumeraskra {
 
 	
 	protected void parseData(){
+		Pattern postOfficeBoxesPattern = Pattern.compile("pósthólf");
 		NodeList gotulisti = Postnumeraskra.getElementsByTagName("Postnumer");
 		for (int i = 0; i < gotulisti.getLength(); i++) {
 			Node nPostnumer = gotulisti.item(i);
-			NodeList PostnumerNodes = nPostnumer.getChildNodes();
-			Postnumer postnumer = new Postnumer();
-			for (int j = 0; j < PostnumerNodes.getLength(); j++) {
-				Node PostnumerNode = PostnumerNodes.item(j);
-				if(PostnumerNode.getNodeName().equals("Numer")){
-					String id = getNodeChildValueAsString(PostnumerNode);
-					try{
-						postnumer.setNumerInt(Integer.parseInt(id));
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-				else if(PostnumerNode.getNodeName().equals("Heiti")){
-					String heiti = getNodeChildValueAsString(PostnumerNode);
-					postnumer.setName(heiti);
-				}
-				else if(PostnumerNode.getNodeName().equals("Heimili")){
-					String heimili = getNodeChildValueAsString(PostnumerNode);
-					postnumer.setHeimili(heimili);
-				}
+			Postnumer postnumer = getPostnumer(nPostnumer, postOfficeBoxesPattern);
+			if (postnumer != null) {
+				getPostnumer().add(postnumer);
 			}
-			getPostnumer().add(postnumer);
 		}
 	}
+	
+	private Postnumer getPostnumer(Node nPostnumer, Pattern postOfficePattern) {
+		NodeList PostnumerNodes = nPostnumer.getChildNodes();
+		Postnumer postnumer = new Postnumer();
+		for (int j = 0; j < PostnumerNodes.getLength(); j++) {
+			Node PostnumerNode = PostnumerNodes.item(j);
+			if(PostnumerNode.getNodeName().equals("Numer")){
+				String id = getNodeChildValueAsString(PostnumerNode);
+				try{
+					postnumer.setNumerInt(Integer.parseInt(id));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			else if(PostnumerNode.getNodeName().equals("Heiti")){
+				String heiti = getNodeChildValueAsString(PostnumerNode);
+				postnumer.setName(heiti);
+			}
+			else if(PostnumerNode.getNodeName().equals("Heimili")){
+				String heimili = getNodeChildValueAsString(PostnumerNode);
+				if (heimili != null) {
+					Matcher matcher = postOfficePattern.matcher(heimili);
+					if (heimili != null && matcher.find()) {
+						// do not add post office boxes to the list
+						return null;
+					}
+				}
+				postnumer.setHeimili(heimili);
+			}
+		}
+		return postnumer;
+	}
+
 
 
 	private String getNodeChildValueAsString(Node PostnumerNode) {
@@ -132,7 +150,7 @@ public class Postnumeraskra {
 				return num;
 			}
 		}
-		throw new RuntimeException("Postnumer: "+numer+" not found");
+		return null;
 	}
 	
 	public List getPostnumer() {
