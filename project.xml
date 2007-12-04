@@ -32,4 +32,11 @@
     <sourceDirectory>src/java</sourceDirectory>
   </build>
   <properties/>
+  <versions>
+    <version>
+      <id>1.1</id>
+      <name>1.1</name>
+      <tag>ICELAND_1_1</tag>
+    </version>
+  </versions>
 </project>
