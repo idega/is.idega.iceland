@@ -3,6 +3,7 @@ package is.postur;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +163,24 @@ public class Gotuskra {
 		}
 		nafn = nafn.trim();
 		return (Gata) getGotur().get(postnumer, nafn);
+	}
+	
+	public Gata getGataByNafnOrNafnThagufallAndPostnumer(String nafnNefnifallOrThagufall, String postnumer){
+
+		if (nafnNefnifallOrThagufall == null) { 
+			return null;
+		}
+		String nafn = nafnNefnifallOrThagufall.trim().toLowerCase();
+		Collection gotur = getGoturByPostnumer(postnumer);
+		for (Iterator iterator = gotur.iterator(); iterator.hasNext();) {
+			Gata gata = (Gata) iterator.next();
+			String gataNafn = gata.getNafn();
+			String gataNafnThagufall = gata.getNafnThagufall();
+			if(gataNafn.equalsIgnoreCase(nafn)||gataNafnThagufall.equalsIgnoreCase(nafn)){
+				return gata;
+			}
+		}
+		return null;
 	}
 		
 //		List allargotur = getGoturByPostnumer(postnumer);
