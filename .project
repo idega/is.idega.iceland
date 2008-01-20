@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <projectDescription>
-  <name>is.idega.iceland</name>
-  <comment>
+	<name>is.idega.iceland</name>
+	<comment>
   </comment>
-  <projects>
-    <project>com.idega.core</project>
-  </projects>
-  <buildSpec>
-    <buildCommand>
-      <name>org.eclipse.jdt.core.javabuilder</name>
-      <arguments>
-      </arguments>
-    </buildCommand>
-  </buildSpec>
-  <natures>
-    <nature>org.eclipse.jdt.core.javanature</nature>
-  </natures>
+	<projects>
+		<project>com.idega.core</project>
+		<project>is.mentor</project>
+		<project>com.idega.block.school</project>
+		<project>com.idega.workspace</project>
+		<project>com.idega.webface</project>
+		<project>se.idega.idegaweb.commune.school</project>
+		<project>is.idega.block.family</project>
+		<project>com.idega.block.process</project>
+		<project>com.idega.block.web2.0</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+	</natures>
 </projectDescription>
+
