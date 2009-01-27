@@ -1,4 +1,4 @@
-<document>
+<document xmlns="http://maven.apache.org/changes/1.0.0">
   <properties>
     <title>Landskra Fasteigna Integration Changes</title>
     <author email="tryggvil@idega.com">Tryggvi Larusson</author>
